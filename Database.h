@@ -6,6 +6,7 @@
 #include <mysql_connection.h>
 #include <cppconn/prepared_statement.h>
 #include <stdexcept>
+#include <memory>
 #include"User.h"
 #include"Product.h"
 #include"Order.h"

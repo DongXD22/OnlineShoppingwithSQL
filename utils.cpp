@@ -33,6 +33,7 @@ const map<string, string> Menu = {
 	{"User_InfoMenu",User_InfoMenu},
 	{"AdminMenu",AdminMenu}
 };
+
 void ShowMenu(string menu){
 	auto it = Menu.find(menu);
 	if (it != Menu.end()) {
@@ -43,97 +44,6 @@ void ShowMenu(string menu){
 	}
 }
 
-shared_ptr<User> Register(Database& db){
-	string username;
-	cout << "Please enter your username:";
-	cin >> username;
-	string email;
-	cout << "\nPlease enter your Email:";
-	cin >> email;
-	string password;
-	cout << "\nPlease enter your password:";
-	cin >> password;
-	double balance;
-	cout << "\nPlease enter your balance:";
-	cin >> balance;
-	if (balance < 0) {
-		throw "Your balance can't below 0!";
-	}
-	shared_ptr<User> user=make_shared<User>(username, password, email, balance);
-	db.insertUser(user);
-	return user;
-}
-
-shared_ptr<User> Login(Database& db){
-	string username;
-	cout << "Please enter your username:";
-	cin >> username;
-	string password;
-	cout << "\nPlease enter your password:";
-	cin >> password;
-	User nuser = db.getUser(username);
-	if (nuser.getPassword() != password) {
-		throw "Wrong password!";
-	}
-	shared_ptr<User> user = make_shared<User>(nuser);
-	return user;
-}
-
-void ChangeUserName(shared_ptr<User> user){
-	string username;
-	cout << "\nEnter your new name:";
-	cin >> username;
-	user->setUserName(username);
-}
-
-void ChangeEamil(shared_ptr<User> user){
-	string email;
-	cout << "\nEnter your new Email:";
-	cin >> email;
-	user->setEmail(email);
-}
-
-void ChangePassword(shared_ptr<User> user){
-	string psw, newpsw;
-	cout << "\nEnter your old password:";
-	cin >> psw;
-	cout << "\nEnter your new password:";
-	cin >> newpsw;
-	user->setPassword(psw, newpsw);
-}
-
-void ChangeBalance(shared_ptr<User> user){
-	double blc;
-	cout << "\nEnter your balance:";
-	cin >> blc;
-	user->setbalance(blc);
-}
-
-void ChangeUserInfo(Database& db, shared_ptr<User> user){
-	while (true) {	//"1.Username\n""2.Email\n""3.Password\n""4.Balance\n"
-		int ix = 0;
-		ShowMenu("User_InfoMenu");
-		user->ShowInfo();
-		cout << "\nEnter the info you want to change:";
-		cin >> ix;
-		if (ix == 1) {
-			ChangeUserName(user);
-		}
-		else if (ix == 2) {
-			ChangeEamil(user);
-		}
-		else if (ix == 3) {
-			ChangePassword(user);
-		}
-		else if (ix == 4) {
-			ChangeBalance(user);
-		}
-		else {
-			db.insertUser(user);
-			break;
-		}
-	}
-}
 
 void Shopping(Database& db, shared_ptr<User> user,shared_ptr<Cart> cart){
 	while (true) {

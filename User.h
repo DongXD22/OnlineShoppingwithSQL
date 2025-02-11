@@ -2,6 +2,8 @@
 
 #include"Product.h"
 #include"Order.h"
+#include"Database.h"
+#include<memory>
 #include<string>
 #include<vector>
 using namespace std;
@@ -28,6 +30,14 @@ public:
     string getPassword()const;
     string getEmail()const;
     double getbalance()const;
+
+    shared_ptr<User> Register(Database& db);
+    shared_ptr<User> Login(Database& db);
+    void ChangeUserName();
+    void ChangeEamil();
+    void ChangePassword();
+    void ChangeBalance();
+    void ChangeUserInfo(Database& db);
 
     void ShowInfo()const;
 };
