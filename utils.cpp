@@ -1,45 +1,65 @@
 #include "utils.h"
+#include <cstdlib>
+#include <vector>
 using namespace std;
-const string MainMenu = 
-"\n1.Regist\n"
-"2.Login\n"
-"3.Admin\n"
-"4.Exit\n";
-const string UserMenu =
-"\n1.View products\n"
-"2.Show Cart\n"
-"3.Checkout\n"
-"4.Shopping history\n"
-"5.Order history\n"
-"6.Change information\n"
-;
-const string User_InfoMenu = 
-"\n1.Username\n"
-"2.Email\n"
-"3.Password\n"
-"4.Balance\n"
-;
-const string AdminMenu = 
-"\n1.View Users\n"
-"2.View Products\n"
-"3.View Orders\n"
-"4.Create Products\n"
-;
+const vector<string> MainMenu = {
+	"Regist",
+	"Login",
+	"Admin",
+	"Exit"
+};
 
-		
-const map<string, string> Menu = {
+
+const vector<string> UserMenu = {
+	"View products",
+	"Show Cart",
+	"Checkout",
+	"Shopping history"
+	"Order history",
+	"Change information"
+};
+
+const vector<string> User_InfoMenu = {
+	"Username",
+	"Email",
+	"Password",
+	"Balance"
+};
+
+const vector<string> AdminMenu = {
+	"View Users"
+	"View Products"
+	"View Orders"
+	"Create Products"
+};
+	
+const map<string, vector<string>> Menu = {
 	{"MainMenu",MainMenu},
 	{"UserMenu",UserMenu},
 	{"User_InfoMenu",User_InfoMenu},
 	{"AdminMenu",AdminMenu}
 };
+
+void clear_screen(){
+#ifdef _WIN32
+	system("cls");
+#else
+	system("clear");
+#endif
+}
+
 void ShowMenu(string menu){
 	auto it = Menu.find(menu);
 	if (it != Menu.end()) {
-		cout << it->second;
+		int cnt = 1;
+		for (auto opt : it->second) {
+			cout <<cnt<<". "<< opt << endl;
+			cnt++;
+		}
+		cout << "Enter your option :";
 	}
 	else {
-		cout << "Menu not found!" << endl; // 如果没有找到菜单，输出提示信息
+		cout << "Menu not found!" << endl; 
 	}
 }
 
@@ -59,6 +79,7 @@ shared_ptr<User> Register(Database& db){
 	if (balance < 0) {
 		throw "Your balance can't below 0!";
 	}
+	clear_screen();
 	shared_ptr<User> user=make_shared<User>(username, password, email, balance);
 	db.insertUser(user);
 	return user;
@@ -76,6 +97,7 @@ shared_ptr<User> Login(Database& db){
 		throw "Wrong password!";
 	}
 	shared_ptr<User> user = make_shared<User>(nuser);
+	clear_screen();
 	return user;
 }
 
@@ -115,7 +137,7 @@ void ChangeUserInfo(Database& db, shared_ptr<User> user){
 		ShowMenu("User_InfoMenu");
 		user->ShowInfo();
 		cout << "\nEnter the info you want to change:";
-		cin >> ix;
+		getInputandClear(ix);
 		if (ix == 1) {
 			ChangeUserName(user);
 		}
@@ -140,10 +162,10 @@ void Shopping(Database& db, shared_ptr<User> user,shared_ptr<Cart> cart){
 		int px = 0;
 		db.exportProducts();
 		cout << "\nEnter product id you want:";
-		cin >> px;
+		getInputandClear(px);
 		if (px) {
 			shared_ptr<Product> prd = make_shared<Product>(db.getProduct(px));
-			cout << endl << prd->getDescription() << endl;
+			prd->displayInfo();
 			db.insertBrowsingHistory(*user, *prd);
 
 			int amount;
@@ -152,6 +174,7 @@ void Shopping(Database& db, shared_ptr<User> user,shared_ptr<Cart> cart){
 			if(amount){
 				cart->addProduct(prd, amount);
 			}
+			clear_screen();
 		}
 		else break;
 	}
@@ -169,7 +192,7 @@ void Payment(Database& db, shared_ptr<User> user, shared_ptr<Order> ord){
 	user->setbalance(user->getbalance() - ord->getTotalPrice());
 	db.insertUser(user);
 	ord->setOrderStatus("Completed");
-	db.insertOrder(ord, *user);
+	db.insertOrder(ord);
 }
 
 void PayOrder(Database& db, shared_ptr<User> user) {
@@ -177,7 +200,7 @@ void PayOrder(Database& db, shared_ptr<User> user) {
 		int ox = 0;
 		db.exportOrders(*user);
 		cout << "\nEnter order id you want to pay:";
-		cin >> ox;
+		getInputandClear(ox);
 		if (ox) {
 			shared_ptr<Order> ord = make_shared<Order>(db.getOrder(ox));
 			Payment(db, user, ord);
@@ -191,13 +214,13 @@ void Admin(Database& db){
 		ShowMenu("AdminMenu");
 		int ax = 0;
 		cout << "\nEnter what you want to to:";
-		cin >> ax;
+		getInputandClear(ax);
 		if (ax == 1) {
 			while(true){
 				db.exportUsers();
 				int dx;
 				cout << "\nEnter UserID you want to delete:";
-				cin >> dx;
+				getInputandClear(dx);
 				if (dx) {
 					db.deleteUser(dx);
 				}
@@ -209,7 +232,7 @@ void Admin(Database& db){
 				db.exportProducts();
 				int dx;
 				cout << "\nEnter ProductID you want to delete:";
-				cin >> dx;
+				getInputandClear(dx);
 				if (dx) {
 					db.deleteProduct(dx);
 				}

@@ -58,8 +58,8 @@ void Cart::checkout(Database& db,shared_ptr<User> user){
     auto now=chrono::system_clock::now();
     string t=to_string(chrono::duration_cast<chrono::seconds>(now.time_since_epoch()).count());
     double all=this->getTotalAmount();
-    shared_ptr<Order> ord = make_shared<Order>(t, all, ProductList);
-    db.insertOrder(ord, *user);
+    shared_ptr<Order> ord = make_shared<Order>(t, all, ProductList,user->getUserID());
+    db.insertOrder(ord);
 
     for(int i=0;i<ProductList.size();i++){
         shared_ptr<Product> prd=ProductList[i].first;

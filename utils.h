@@ -7,6 +7,7 @@
 #include<map>
 using namespace std;
 
+void clear_screen();
 void ShowMenu(string menu);
 
 shared_ptr<User> Register(Database& db);
@@ -25,4 +26,8 @@ void PayOrder(Database& db, shared_ptr<User> user);
 void Admin(Database& db);
 void CreateProduct(Database& db);
 
-
+template<typename T>
+inline void getInputandClear(T& input){
+	cin >> input;
+	clear_screen();
+}

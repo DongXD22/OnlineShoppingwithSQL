@@ -18,7 +18,7 @@ int main() {
 		while (true) {
 			int x = 0;
 			ShowMenu("MainMenu");
-			cin >> x;
+			getInputandClear(x);
 			if (x == 1 || x == 2) {		//User
 				shared_ptr<User> user;
 				shared_ptr<Cart> cart = make_shared<Cart>();
@@ -31,7 +31,7 @@ int main() {
 				while (true) {
 					int ux = 0;
 					ShowMenu("UserMenu");	//"1.View products\n""2.Show Cart""3.Checkout""4.Shopping history\n""5.Order history\n""6.Change information\n"
-					cin >> ux;
+					getInputandClear(ux);
 					if (ux == 1) {	//View product
 						Shopping(db, user, cart);
 					}

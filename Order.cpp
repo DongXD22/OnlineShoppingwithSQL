@@ -2,8 +2,8 @@
 #include <iterator>
 using namespace std;
 Order::Order(string time, double prc,
-    vector<pair<shared_ptr<Product>, int>> pcslist)
-    : TimeStamp(time), TotalPrice(prc) {
+    vector<pair<shared_ptr<Product>, int>> pcslist,int userid)
+    : TimeStamp(time), TotalPrice(prc), UserID(userid){
     // 使用 back_inserter 确保动态插入元素
     copy(pcslist.begin(), pcslist.end(), back_inserter(PurchasedList));
 }
@@ -26,6 +26,11 @@ void Order::setOrderStatus(string stt){
 
 int Order::getOrderID() const{
     return OrderID;
+}
+
+int Order::getUserID() const
+{
+    return UserID;
 }
 
 string Order::getStatus() const{

@@ -24,7 +24,7 @@ public:
 
 	void insertUser(shared_ptr<User> user);
 	void insertProduct(shared_ptr<Product> prd);
-	void insertOrder(shared_ptr<Order> ord,User user);
+	void insertOrder(shared_ptr<Order> ord);
 	void insertOrderItems(Order ord);
 	void insertBrowsingHistory(User user, Product prd);
 
@@ -41,3 +41,4 @@ public:
 	void deleteProduct(int id);
 	void deleteOrder(int id);
 };
+
