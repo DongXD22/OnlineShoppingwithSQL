@@ -55,7 +55,6 @@ void Database::insertUser(shared_ptr<User> user){
 	}
 	catch (sql::SQLException& e) {
 		cerr << "Error in insertUser: " << e.what() << endl;
-		throw e;
 	}
 }
 

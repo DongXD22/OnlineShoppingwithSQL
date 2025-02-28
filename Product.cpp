@@ -9,10 +9,15 @@ void Product::setID(const int& id){
 }
 
 void Product::setName(const string& name){
-    if (name.find_first_not_of(" ") == string::npos) { // ¼ì²éÊÇ·ñÎª¿Õ°××Ö·û´®
-        throw "Invalid Name!";
+    try{
+        if (name.find_first_not_of(" ") == string::npos) {
+            throw "Invalid Name!";
+        }
+        ProductName = name;
     }
-    ProductName=name;
+    catch (const char* msg) {
+        cerr << msg << endl;
+    }
 }
 
 int Product::getProductID() const{
@@ -32,10 +37,15 @@ string Product::getDescription() const{
 }
 
 void Product::setPrice(const double& prc){
-    if(prc<=0){
-        throw "Wrong Price";
+    try{
+        if (prc <= 0) {
+            throw "Wrong Price";
+        }
+        Price = prc;
     }
-    Price=prc;
+    catch (const char* msg) {
+        cerr << msg << endl;
+    }
 }
 
 double Product::getPrice() const{
@@ -43,10 +53,15 @@ double Product::getPrice() const{
 }
 
 void Product::setStock(const int& stk){
-    if(stk<0){
-        throw "Wrong Stock";
+    try{
+        if (stk < 0) {
+            throw "Wrong Stock";
+        }
+        Stock = stk;
     }
-    Stock=stk;
+    catch (const char* msg) {
+        cerr << msg << endl;
+    }
 }
 
 int Product::getStock() const{

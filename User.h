@@ -1,12 +1,19 @@
 #pragma once
 
+#ifdef __cplusplus
+
 #include"Product.h"
 #include"Order.h"
+#include"Database.h"
+#include"utils.h"
+#include<memory>
 #include<string>
 #include<vector>
+
 using namespace std;
 
-class User{
+
+class User {
 protected:
     int UserID=0;
     int status=1;
@@ -15,8 +22,8 @@ protected:
     vector<Product> ShoppingHistory;
     vector<Order> OrderHistory;
 public:
-    User(string name,string psw,
-        string mail,double blc);
+    User(string name, string psw,
+        string mail, double blc);
     void setID(int userid);
     void setUserName(string name);
     void setPassword(string psw,string Newpsw);
@@ -29,5 +36,15 @@ public:
     string getEmail()const;
     double getbalance()const;
 
-    void ShowInfo()const;
+    void ChangeUserName();
+    void ChangeEamil();
+    void ChangePassword();
+    void ChangeBalance();
+    void ChangeUserInfo(Database& db);
+
+    void ShowInfo() const;
+
 };
+
+#endif
+

@@ -1,4 +1,7 @@
 #pragma once
+
+#ifdef __cplusplus
+
 #include <string>
 #include <cppconn/connection.h>
 #include <cppconn/driver.h>
@@ -6,10 +9,14 @@
 #include <mysql_connection.h>
 #include <cppconn/prepared_statement.h>
 #include <stdexcept>
-#include"User.h"
+#include <memory>
+#include "User.h"
 #include"Product.h"
-#include"Order.h"
+#include "Order.h"
+
 using namespace std;
+
+class User;
 
 class Database {
 private:
@@ -41,4 +48,4 @@ public:
 	void deleteProduct(int id);
 	void deleteOrder(int id);
 };
-
+#endif

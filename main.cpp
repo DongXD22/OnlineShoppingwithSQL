@@ -1,10 +1,10 @@
+#pragma once
 #include"Cart.h"
 #include"Database.h"
 #include"Order.h"
 #include"Product.h"
 #include"User.h"
 #include"utils.h"
-#include"Order.h"
 #include<iostream>
 #include<exception>
 using namespace std;
@@ -23,32 +23,32 @@ int main() {
 				shared_ptr<User> user;
 				shared_ptr<Cart> cart = make_shared<Cart>();
 				if (x == 1) {	//Register
-					user = Register(db);
+					user = RegisterUser(db);
 				}
 				else {		//Login
 					user = Login(db);
 				}
 				while (true) {
 					int ux = 0;
-					ShowMenu("UserMenu");	//"1.View products\n""2.Show Cart""3.Checkout""4.Shopping history\n""5.Order history\n""6.Change information\n"
+					ShowMenu("UserMenu");	
 					getInputandClear(ux);
-					if (ux == 1) {	//View product
+					if (ux == 1) {	
 						Shopping(db, user, cart);
 					}
-					else if (ux == 2) {	//Show Cart
+					else if (ux == 2) {	
 						cart->ShowSelectedProduct();
 					}
-					else if (ux == 3) {	//Checkout
+					else if (ux == 3) {	
 						cart->checkout(db, user);
 					}
-					else if (ux == 4) {	//Shopping history
+					else if (ux == 4) {	
 						db.exportBrowsingHistory(*user);
 					}
-					else if (ux == 5) {	//Order history
+					else if (ux == 5) {	
 						PayOrder(db, user);
 					}
-					else if (ux == 6) {	//Change information
-						ChangeUserInfo(db, user);
+					else if (ux == 6) {	
+						user->ChangeUserInfo(db);
 					}
 					else break;
 				}

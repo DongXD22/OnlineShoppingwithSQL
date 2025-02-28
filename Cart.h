@@ -1,5 +1,4 @@
 #pragma once
-
 #include<string>
 #include<vector>
 #include<memory>
@@ -9,6 +8,8 @@
 #include"Database.h"
 
 using namespace std;
+class User;
+class Database;
 
 class Cart{
 private:

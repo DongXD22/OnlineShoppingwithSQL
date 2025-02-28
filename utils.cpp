@@ -1,3 +1,4 @@
+#pragma once
 #include "utils.h"
 #include <cstdlib>
 #include <vector>
@@ -14,7 +15,7 @@ const vector<string> UserMenu = {
 	"View products",
 	"Show Cart",
 	"Checkout",
-	"Shopping history"
+	"Shopping history",
 	"Order history",
 	"Change information"
 };
@@ -27,10 +28,10 @@ const vector<string> User_InfoMenu = {
 };
 
 const vector<string> AdminMenu = {
-	"View Users"
-	"View Products"
-	"View Orders"
-	"Create Products"
+	"View Users",
+	"View Products",
+	"View Orders",
+	"Create Products",
 };
 	
 const map<string, vector<string>> Menu = {
@@ -63,99 +64,39 @@ void ShowMenu(string menu){
 	}
 }
 
-shared_ptr<User> Register(Database& db){
-	string username;
-	cout << "Please enter your username:";
-	cin >> username;
-	string email;
-	cout << "\nPlease enter your Email:";
-	cin >> email;
-	string password;
-	cout << "\nPlease enter your password:";
-	cin >> password;
-	double balance;
-	cout << "\nPlease enter your balance:";
-	cin >> balance;
-	if (balance < 0) {
-		throw "Your balance can't below 0!";
-	}
+shared_ptr<User> RegisterUser(Database& db){
+	User user("","","",3);
+	user.ChangeUserName();
+	user.ChangeEamil();
+	user.ChangePassword();
+	user.ChangePassword();
 	clear_screen();
-	shared_ptr<User> user=make_shared<User>(username, password, email, balance);
-	db.insertUser(user);
-	return user;
+	shared_ptr<User> _user=make_shared<User>(user);
+	db.insertUser(_user);
+	return _user;
 }
 
 shared_ptr<User> Login(Database& db){
-	string username;
-	cout << "Please enter your username:";
-	cin >> username;
-	string password;
-	cout << "\nPlease enter your password:";
-	cin >> password;
-	User nuser = db.getUser(username);
-	if (nuser.getPassword() != password) {
-		throw "Wrong password!";
+	try{
+		string username;
+		cout << "Please enter your username:";
+		cin >> username;
+		string password;
+		cout << "\nPlease enter your password:";
+		cin >> password;
+		User nuser = db.getUser(username);
+		if (nuser.getPassword() != password) {
+			throw "Wrong password!";
+		}
+		shared_ptr<User> user = make_shared<User>(nuser);
+		clear_screen();
+		return user;
 	}
-	shared_ptr<User> user = make_shared<User>(nuser);
-	clear_screen();
-	return user;
-}
-
-void ChangeUserName(shared_ptr<User> user){
-	string username;
-	cout << "\nEnter your new name:";
-	cin >> username;
-	user->setUserName(username);
-}
-
-void ChangeEamil(shared_ptr<User> user){
-	string email;
-	cout << "\nEnter your new Email:";
-	cin >> email;
-	user->setEmail(email);
-}
-
-void ChangePassword(shared_ptr<User> user){
-	string psw, newpsw;
-	cout << "\nEnter your old password:";
-	cin >> psw;
-	cout << "\nEnter your new password:";
-	cin >> newpsw;
-	user->setPassword(psw, newpsw);
-}
-
-void ChangeBalance(shared_ptr<User> user){
-	double blc;
-	cout << "\nEnter your balance:";
-	cin >> blc;
-	user->setbalance(blc);
-}
-
-void ChangeUserInfo(Database& db, shared_ptr<User> user){
-	while (true) {	//"1.Username\n""2.Email\n""3.Password\n""4.Balance\n"
-		int ix = 0;
-		ShowMenu("User_InfoMenu");
-		user->ShowInfo();
-		cout << "\nEnter the info you want to change:";
-		getInputandClear(ix);
-		if (ix == 1) {
-			ChangeUserName(user);
-		}
-		else if (ix == 2) {
-			ChangeEamil(user);
-		}
-		else if (ix == 3) {
-			ChangePassword(user);
-		}
-		else if (ix == 4) {
-			ChangeBalance(user);
-		}
-		else {
-			db.insertUser(user);
-			break;
-		}
+	catch (const char* msg) {
+		cerr << msg << endl;
 	}
 }
+
 
 void Shopping(Database& db, shared_ptr<User> user,shared_ptr<Cart> cart){
 	while (true) {
@@ -181,18 +122,21 @@ void Shopping(Database& db, shared_ptr<User> user,shared_ptr<Cart> cart){
 }
 
 void Payment(Database& db, shared_ptr<User> user, shared_ptr<Order> ord){
-	if (ord->getStatus() != "Pending") {
-		cout << ord->getStatus() << endl;
-		return;
+	try{
+		if (ord->getStatus() != "Pending") {
+			throw ord->getStatus();
+		}
+		if (user->getbalance() < ord->getTotalPrice()) {
+			throw "Not enough balance!" ;
+		}
+		user->setbalance(user->getbalance() - ord->getTotalPrice());
+		db.insertUser(user);
+		ord->setOrderStatus("Completed");
+		db.insertOrder(ord);
 	}
-	if (user->getbalance() < ord->getTotalPrice()) {
-		cout << "Not enough balance!" << endl;
-		return;
+	catch (const char* msg) {
+		cerr << msg << endl;
 	}
-	user->setbalance(user->getbalance() - ord->getTotalPrice());
-	db.insertUser(user);
-	ord->setOrderStatus("Completed");
-	db.insertOrder(ord);
 }
 
 void PayOrder(Database& db, shared_ptr<User> user) {
@@ -213,7 +157,6 @@ void Admin(Database& db){
 	while(true){
 		ShowMenu("AdminMenu");
 		int ax = 0;
-		cout << "\nEnter what you want to to:";
 		getInputandClear(ax);
 		if (ax == 1) {
 			while(true){
